@@ -7,9 +7,20 @@ from pydantic import BaseModel
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
-app= FastAPI()
+from supabase import create_client
 
 load_dotenv()
+
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+
+#SUPABASE_URL = "https://klnjjuwecubcznotlzcy.supabase.co"
+#SUPABASE_KEY = "sb_publishable_qwLS4Fn0CT6_ziZUCTLonQ_9oj3FoUF"
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+app= FastAPI()
+
+
 
 #__________Configuration__________
 Secret_Key = "my secret_key123"
@@ -41,32 +52,44 @@ def create_access_token(data: dict):
     encoded_jwt = jwt.encode(to_encode, Secret_Key, algorithm=Algorithm)
     return encoded_jwt
 
-#__________Register EndPoint__________
+# ─── Register Endpoint ────────────────
 @app.post("/register")
 def register(user: User):
-    if user.Username in fake_users_db:
-        raise HTTPException(status_code=400, detail="Username already exists")
+    # Check if user already exists
+    existing = supabase.table("users").select("*").eq("user_name", user.Username).execute()
+    
+    if len(existing.data) > 0:
+        raise HTTPException(status_code=400, detail="User already exists")
     
     hashed_password = pwd_context.hash(user.password)
-    fake_users_db[user.Username] = hashed_password
-
-    return {"message": "User registered successfully"}
+    
+    supabase.table("users").insert({
+        "user_name": user.Username,
+        "password": hashed_password
+    }).execute()
+    
+    return {"message": f"User {user.Username} registered successfully!"}
 
 
 # ─── Login Endpoint ───────────────────
 @app.post("/login")
 def login(user: User):
-    if user.Username not in fake_users_db:
+    # Supabase se user dhundho
+    result = supabase.table("users").select("*").eq("user_name", user.Username).execute()
+    
+    if len(result.data) == 0:
         raise HTTPException(status_code=401, detail="Invalid username")
     
-    hashed_password = fake_users_db[user.Username]
+    db_user = result.data[0]
     
-    if not pwd_context.verify(user.password, hashed_password):
+    if not pwd_context.verify(user.password, db_user["password"]):
         raise HTTPException(status_code=401, detail="Invalid password")
     
     access_token = create_access_token(data={"sub": user.Username})
     
     return {"access_token": access_token, "token_type": "bearer"}
+
+
 
 # ─── Verify Token Function ────────────
 def get_current_user(token: str = Depends(oauth2_scheme)):
