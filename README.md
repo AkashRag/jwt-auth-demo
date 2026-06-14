@@ -55,4 +55,7 @@ Open: `http://127.0.0.1:8000/docs`
 - Credentials stored in environment variables
 
 ---
+
+🚀 Live Demo: https://jwt-auth-demo-production-3015.up.railway.app/docs
 **Built by [Akash Raghuwanshi](https://github.com/AkashRag)** | AI Automation Engineering Portfolio
+
