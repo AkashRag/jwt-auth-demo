@@ -107,7 +107,12 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 def profile(current_user: str = Depends(get_current_user)):
     return {"message": f"Welcome {current_user}! This is a protected route."}
 
-
+@app.get("/")
+def home():
+    return {
+        "message": "JWT Auth API is running",
+        "docs": "/docs"
+    }
 
 
 
