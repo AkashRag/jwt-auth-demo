@@ -18,7 +18,7 @@ SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 #SUPABASE_KEY = "sb_publishable_qwLS4Fn0CT6_ziZUCTLonQ_9oj3FoUF"
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-app= FastAPI()
+
 
 
 
