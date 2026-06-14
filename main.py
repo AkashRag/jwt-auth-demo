@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 
+app= FastAPI()
 from supabase import create_client
 
 load_dotenv()
@@ -14,8 +15,6 @@ load_dotenv()
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
 
-#SUPABASE_URL = "https://klnjjuwecubcznotlzcy.supabase.co"
-#SUPABASE_KEY = "sb_publishable_qwLS4Fn0CT6_ziZUCTLonQ_9oj3FoUF"
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
@@ -29,7 +28,7 @@ Access_Token_Expire_Minutes = 30
 
 #________Setup__________
 
-app= FastAPI()
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated = "auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
