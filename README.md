@@ -1,56 +1,58 @@
-# 🔐 JWT Authentication API
+# 🔐 JWT Authentication API with Supabase
 
-A FastAPI-based authentication system implementing industry-standard JWT (JSON Web Token) security.
+A production-ready authentication system built with FastAPI — featuring JWT tokens, bcrypt password hashing, and real PostgreSQL database via Supabase.
 
-## 🚀 Features
-
-- **User Registration** — Secure password hashing using bcrypt
-- **Login** — JWT access token generation
-- **Protected Routes** — Token-based authentication using OAuth2 + JWT
+## 🚀 Live Demo
+👉 Coming soon (Railway deploy in progress)
 
 ## 🛠️ Tech Stack
-
 - **FastAPI** — Backend framework
-- **python-jose** — JWT token creation & verification
+- **Supabase (PostgreSQL)** — Real database for user storage
+- **python-jose** — JWT token generation & verification
 - **passlib (bcrypt)** — Password hashing
 - **Pydantic** — Request validation
+- **Railway** — Deployment
 
-## 📋 API Endpoints
+## ✅ API Endpoints
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|----------------|
-| POST | `/register` | Register new user | ❌ |
-| POST | `/login` | Login & get JWT token | ❌ |
-| GET | `/profile` | Get user profile | ✅ |
+| Method | Endpoint | Auth Required | Description |
+|--------|----------|---------------|-------------|
+| POST | `/register` | ❌ | Register new user (bcrypt hashed) |
+| POST | `/login` | ❌ | Login + get JWT token |
+| GET | `/profile` | ✅ | Protected route — token required |
 
 ## 🔄 How It Works
+Register → bcrypt hash → save to Supabase DB
 
-1. **Register** → Password hashed with bcrypt → stored
-2. **Login** → Password verified → JWT token issued (30 min expiry)
-3. **Protected Route** → Token verified → Access granted/denied
+Login → fetch from Supabase → verify hash → JWT token
 
-## 🧪 Testing
+Protected Route → verify JWT → access granted/denied
+
+## ⚙️ Setup Locally
 
 ```bash
-# Register
-curl -X POST http://127.0.0.1:8000/register -H "Content-Type: application/json" -d '{"Username":"akash","password":"test123"}'
-
-# Login
-curl -X POST http://127.0.0.1:8000/login -H "Content-Type: application/json" -d '{"Username":"akash","password":"test123"}'
-
-# Access protected route
-curl http://127.0.0.1:8000/profile -H "Authorization: Bearer YOUR_TOKEN_HERE"
+git clone https://github.com/AkashRag/jwt-auth-demo.git
+cd jwt-auth-demo
+pip install -r requirements.txt
 ```
 
-## 📦 Setup
+Create `.env` file:
+SUPABASE_URL=your_url
 
+SUPABASE_KEY=your_key
+
+Run:
 ```bash
-pip install -r requirements.txt
 python -m uvicorn main:app --reload
 ```
 
-Visit `http://127.0.0.1:8000/docs` for interactive API documentation.
+Open: `http://127.0.0.1:8000/docs`
+
+## 🔐 Security Features
+- Passwords never stored as plain text — bcrypt hashing
+- JWT tokens expire in 30 minutes
+- Protected routes require valid Bearer token
+- Credentials stored in environment variables
 
 ---
-
-**Built by [Akash Raghuwanshi](https://github.com/AkashRag)** | Part of AI Automation Engineering portfolio
+**Built by [Akash Raghuwanshi](https://github.com/AkashRag)** | AI Automation Engineering Portfolio
