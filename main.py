@@ -107,11 +107,5 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
 def profile(current_user: str = Depends(get_current_user)):
     return {"message": f"Welcome {current_user}! This is a protected route."}
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8080)
-
-
-
 
     
